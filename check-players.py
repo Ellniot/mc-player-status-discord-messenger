@@ -37,11 +37,9 @@ def load_last_status():
     # loads last player name list
     # if no file, or file is blank, returns []
     names = []
-    #C:\Users\Elliot\Documents\Coding\mc-server-player-bot
     
     print("getting current working directory")
-    cwd_path = os.getcwd()
-    if os.path.isfile(f"{cwd_path}\{LAST_STATUS_FILE_NAME}"):
+    if os.path.isfile(LAST_STATUS_FILE_NAME):
         try:
             last_status_file = open(LAST_STATUS_FILE_NAME, 'r')
             names = last_status_file.read().split(',')
@@ -83,7 +81,7 @@ def main():
     last_names = load_last_status()
 
     names.sort()
-    last_names   # dont need to be sorted since they were sorted before being saved
+    # last_names dont need to be sorted since they were sorted before being saved
     if names == last_names:
         # lists are the same
         print(f"{CURRENT_DATETIME} - lists are the same. Current online players - {', '.join(names)}")
