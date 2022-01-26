@@ -42,7 +42,12 @@ def load_last_status():
     if os.path.isfile(LAST_STATUS_FILE_NAME):
         try:
             last_status_file = open(LAST_STATUS_FILE_NAME, 'r')
-            names = last_status_file.read().split(',')
+            names_raw = last_status_file.read()
+            # don't split if empty file, this makes it a non-empty list "" -> "['']"
+            if len(names_raw) == 0:
+                names = []
+            else:
+                names = names_raw.split(',')
             last_status_file.close()
         except Exception as e:
             print(e.with_traceback)
