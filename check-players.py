@@ -1,4 +1,5 @@
 from datetime import datetime
+from logging import lastResort
 import os
 import pytz
 from mcstatus import MinecraftServer
@@ -53,7 +54,7 @@ def load_last_status():
 def update_last_status(names):
     # updates the last status file w/ online and names list
     last_status_file = open(LAST_STATUS_FILE_NAME, 'w')
-    last_status_file.write(', '.join(names))
+    last_status_file.write(','.join(names))
     last_status_file.close()
 
 
@@ -82,7 +83,7 @@ def main():
     last_names = load_last_status()
 
     names.sort()
-    last_names.sort()
+    last_names   # dont need to be sorted since they were sorted before being saved
     if names == last_names:
         # lists are the same
         print(f"{CURRENT_DATETIME} - lists are the same. Current online players - {', '.join(names)}")
