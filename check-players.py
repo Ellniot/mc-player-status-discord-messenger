@@ -1,5 +1,4 @@
 from datetime import datetime
-from logging import lastResort
 import os
 import pytz
 from mcstatus import MinecraftServer
@@ -12,22 +11,18 @@ LAST_STATUS_FILE_NAME = os.getenv('LAST_STATUS_FILE_NAME')
 DISCORD_WEBHOOK_URL = os.getenv('DISCORD_WEBHOOK_URL')
 DISCORD_USERNAME = os.getenv('DISCORD_USERNAME')
 DISCORD_AVATAR_URL = os.getenv('DISCORD_AVATAR_URL')
+TIME_ZONE = os.getenv('TIME_ZONE')
 
 print("getting timezone")
-CST = pytz.timezone('America/Chicago')
+CST = pytz.timezone(TIME_ZONE)
 print("getting time")
 CURRENT_DATETIME = datetime.now(CST)
 
 
 def check_server():
     print("checking server")
-    # Get the current server info
     server = MinecraftServer.lookup(SERVER_ADDRESS)
-    # 'players' has attributes 'max', 'names' and 'online' (count)
     players = server.query().players
-    # number of online players
-    online = players.online
-    # a list of the name strings
     names = players.names
 
     return names
