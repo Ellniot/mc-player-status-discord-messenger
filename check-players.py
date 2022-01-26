@@ -64,7 +64,7 @@ def message_discord(names):
     if len(names) == 1:
         message = f"🚶‍♂️ Current player: {', '.join(names)} 🚶‍♂️"
     if len(names) > 1:
-        message = f"👯‍♂️ Current player: {', '.join(names)} 👯‍♂️"
+        message = f"👯‍♂️ Current players: {', '.join(names)} 👯‍♂️"
 
     data = {
         "username": DISCORD_USERNAME,
