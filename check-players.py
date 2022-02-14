@@ -1,9 +1,12 @@
 from datetime import datetime
+from http import server
 import os
 import pytz
 from mcstatus import MinecraftServer
 import requests
 from dotenv import load_dotenv
+import subprocess
+import platform
 
 load_dotenv()
 SERVER_ADDRESS = os.getenv('SERVER_ADDRESS')
@@ -18,6 +21,17 @@ CST = pytz.timezone(TIME_ZONE)
 print("getting time")
 CURRENT_DATETIME = datetime.now(CST)
 
+def ping_server():
+    print("pinging the server")
+    try:
+        output = subprocess.check_output("ping -{} 1 {}".format('n' if platform.system().lower(
+        ) == "windows" else 'c', SERVER_ADDRESS ), shell=True, universal_newlines=True)
+        if 'unreachable' in output:
+            return False
+        else:
+            return True
+    except Exception:
+            return False
 
 def check_server():
     print("checking server")
@@ -26,7 +40,6 @@ def check_server():
     names = players.names
 
     return names
-
 
 def load_last_status():
     # loads last player name list
@@ -57,12 +70,16 @@ def update_last_status(names):
 
 
 def message_discord(names):
-    # sends a message to discord
-    message = "⛔ No current online players. ⛔"
-    if len(names) == 1:
-        message = f"🚶‍♂️ Current player: {', '.join(names)} 🚶‍♂️"
-    if len(names) > 1:
-        message = f"👯‍♂️ Current players: {', '.join(names)} 👯‍♂️"
+    # set the discord message
+    if names == ["OFFLINE"]:
+        message = "💀 Server Offline 💀"
+    else:
+        message = "⛔ No current online players. ⛔"
+        if len(names) == 1:
+            message = f"🚶‍♂️ Current player: {', '.join(names)} 🚶‍♂️"
+        if len(names) > 1:
+            message = f"👯‍♂️ Current players: {', '.join(names)} 👯‍♂️"
+
 
     data = {
         "username": DISCORD_USERNAME,
@@ -77,9 +94,14 @@ def message_discord(names):
 
 
 def main():
-    names = check_server()
-    last_names = load_last_status()
+    server_online = ping_server()
+    if server_online:
+        names = check_server()
+    # server is offline
+    else:
+        names = ["OFFLINE"]
 
+    last_names = load_last_status()
     names.sort()
     # last_names dont need to be sorted since they were sorted before being saved
     if names == last_names:
